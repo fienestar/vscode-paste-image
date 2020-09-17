@@ -335,7 +335,9 @@ class Paster {
                 // console.log('exit',code,signal);
             });
             ascript.stdout.on('data', function (data: Buffer) {
-                cb(imagePath, data.toString().trim());
+                var data = fs.readFileSync(imagePath, {encoding:'base64'})
+                fs.unlinkSync(imagePath)
+                cb(imagePath, data);
             });
         } else {
             // Linux 
@@ -390,12 +392,12 @@ class Paster {
         let imageSyntaxSuffix = ""
         switch (languageId) {
             case "markdown":
-                imageSyntaxPrefix = `![](`
-                imageSyntaxSuffix = `)`
+                imageSyntaxPrefix = "![](data:image/png;base64,";
+                imageSyntaxSuffix = ")";
                 break;
             case "asciidoc":
-                imageSyntaxPrefix = `image::`
-                imageSyntaxSuffix = `[]`
+                imageSyntaxPrefix = "image::data:image/png;base64,";
+                imageSyntaxSuffix = "[]";
                 break;
         }
 
